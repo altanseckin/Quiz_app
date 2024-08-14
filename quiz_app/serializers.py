@@ -8,7 +8,12 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     password=serializers.CharField(validators=[validate_password])
     class Meta:
         model=User
-        fields=['email','password','username','id']      
+        fields=['email','password','username','id']  
+    def validate(self, attrs):
+        username = attrs.get('username')
+        if ' ' in username:
+            raise serializers.ValidationError("Invalid Username")
+        return attrs
     def create(self,validated_data):
         user = User.objects.create_user(**validated_data)
         return user
